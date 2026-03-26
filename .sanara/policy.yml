@@ -18,4 +18,3 @@ advisor:
   use_llm: false
   max_findings: 5
   min_severity: moderate
-version: 1
