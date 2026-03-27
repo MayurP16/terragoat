@@ -26,7 +26,7 @@ jobs:
           git config user.name "Sanara[bot]"
           git config user.email "sanara-bot@users.noreply.github.com"
 
-      - uses: MayurP16/sanara@v0.1.0a3
+      - uses: MayurP16/sanara@sanara-action
         with:
           allow_agentic: "false"
           publish_dry_run: "false"
