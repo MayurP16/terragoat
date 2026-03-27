@@ -413,7 +413,7 @@ EOF
   tags = merge({
     Name = "${local.resource_prefix.value}-dbapp"
     }, {
-    git_commit           = "2248548f25879d849f9a661a5f4782cf54003f40"
+    git_commit           = "b1d8b0b208270ba736ceec89700b4d358bed8fcf"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2026-03-27 01:34:20"
     git_last_modified_by = "patelm95@gmail.com"
