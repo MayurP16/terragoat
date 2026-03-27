@@ -52,7 +52,7 @@ resource "aws_db_option_group" "default" {
     Name        = "${local.resource_prefix.value}-og"
     Environment = local.resource_prefix.value
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -86,7 +86,7 @@ resource "aws_db_parameter_group" "default" {
     Name        = "${local.resource_prefix.value}-pg"
     Environment = local.resource_prefix.value
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -108,7 +108,7 @@ resource "aws_db_subnet_group" "default" {
     Name        = "sg-${local.resource_prefix.value}"
     Environment = local.resource_prefix.value
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -129,7 +129,7 @@ resource "aws_security_group" "default" {
     Name        = "${local.resource_prefix.value}-rds-sg"
     Environment = local.resource_prefix.value
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -166,7 +166,7 @@ resource "aws_iam_instance_profile" "ec2profile" {
   name = "${local.resource_prefix.value}-profile"
   role = "${aws_iam_role.ec2role.name}"
   tags = {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -202,7 +202,7 @@ EOF
     Name        = "${local.resource_prefix.value}-role"
     Environment = local.resource_prefix.value
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
     git_last_modified_at = "2021-05-02 10:06:10"
     git_last_modified_by = "nimrodkor@users.noreply.github.com"
@@ -413,11 +413,11 @@ EOF
   tags = merge({
     Name = "${local.resource_prefix.value}-dbapp"
     }, {
-    git_commit           = "ad8e1f9e789d77b5a9ce717c8cfcb61fa636d895"
+    git_commit           = "2248548f25879d849f9a661a5f4782cf54003f40"
     git_file             = "terraform/aws/db-app.tf"
-    git_last_modified_at = "2021-05-02 10:06:10"
-    git_last_modified_by = "nimrodkor@users.noreply.github.com"
-    git_modifiers        = "jonathan.jozwiak/jonjozwiak/nimrodkor"
+    git_last_modified_at = "2026-03-27 01:34:20"
+    git_last_modified_by = "patelm95@gmail.com"
+    git_modifiers        = "jonathan.jozwiak/jonjozwiak/nimrodkor/patelm95"
     git_org              = "MayurP16"
     git_repo             = "terragoat"
     yor_trace            = "f7999d4e-c983-43ee-bd88-7903a6f8483e"
