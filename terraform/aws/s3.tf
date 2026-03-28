@@ -102,7 +102,7 @@ resource "aws_s3_bucket" "data_science" {
     enabled = true
   }
   logging {
-    target_bucket = "${aws_s3_bucket.logs.id}"
+    target_bucket = aws_s3_bucket.logs.id
     target_prefix = "log/"
   }
   force_destroy = true
@@ -129,7 +129,7 @@ resource "aws_s3_bucket" "logs" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = "${aws_kms_key.logs_key.arn}"
+        kms_master_key_id = aws_kms_key.logs_key.arn
       }
     }
   }
@@ -149,4 +149,238 @@ resource "aws_s3_bucket" "logs" {
     }, {
     yor_name = "logs"
   })
+}
+
+resource "aws_s3_bucket" "data_access_logs" {
+  bucket_prefix = "data-access-logs-"
+}
+
+resource "aws_s3_bucket_logging" "data_logging" {
+  bucket        = aws_s3_bucket.data.id
+  target_bucket = aws_s3_bucket.data_access_logs.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket" "financials_access_logs" {
+  bucket_prefix = "financials-access-logs-"
+}
+
+resource "aws_s3_bucket_logging" "financials_logging" {
+  bucket        = aws_s3_bucket.financials.id
+  target_bucket = aws_s3_bucket.financials_access_logs.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket" "logs_access_logs" {
+  bucket_prefix = "logs-access-logs-"
+}
+
+resource "aws_s3_bucket_logging" "logs_logging" {
+  bucket        = aws_s3_bucket.logs.id
+  target_bucket = aws_s3_bucket.logs_access_logs.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket" "operations_access_logs" {
+  bucket_prefix = "operations-access-logs-"
+}
+
+resource "aws_s3_bucket_logging" "operations_logging" {
+  bucket        = aws_s3_bucket.operations.id
+  target_bucket = aws_s3_bucket.operations_access_logs.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket_public_access_block" "data_pab" {
+  bucket                  = aws_s3_bucket.data.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "data_science_pab" {
+  bucket                  = aws_s3_bucket.data_science.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "financials_pab" {
+  bucket                  = aws_s3_bucket.financials.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "logs_pab" {
+  bucket                  = aws_s3_bucket.logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "operations_pab" {
+  bucket                  = aws_s3_bucket.operations.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "data_sse" {
+  bucket = aws_s3_bucket.data.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "data_science_sse" {
+  bucket = aws_s3_bucket.data_science.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "financials_sse" {
+  bucket = aws_s3_bucket.financials.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "operations_sse" {
+  bucket = aws_s3_bucket.operations.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "data_versioning" {
+  bucket = aws_s3_bucket.data.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "financials_versioning" {
+  bucket = aws_s3_bucket.financials.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "data_access_logs_pab" {
+  bucket                  = aws_s3_bucket.data_access_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "financials_access_logs_pab" {
+  bucket                  = aws_s3_bucket.financials_access_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "logs_access_logs_pab" {
+  bucket                  = aws_s3_bucket.logs_access_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "operations_access_logs_pab" {
+  bucket                  = aws_s3_bucket.operations_access_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "data_access_logs_sse" {
+  bucket = aws_s3_bucket.data_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "financials_access_logs_sse" {
+  bucket = aws_s3_bucket.financials_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs_access_logs_sse" {
+  bucket = aws_s3_bucket.logs_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "operations_access_logs_sse" {
+  bucket = aws_s3_bucket.operations_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "data_access_logs_versioning" {
+  bucket = aws_s3_bucket.data_access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "financials_access_logs_versioning" {
+  bucket = aws_s3_bucket.financials_access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "logs_access_logs_versioning" {
+  bucket = aws_s3_bucket.logs_access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "operations_access_logs_versioning" {
+  bucket = aws_s3_bucket.operations_access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }

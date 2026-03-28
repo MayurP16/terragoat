@@ -1,11 +1,11 @@
 resource "aws_instance" "web_host" {
   # ec2 have plain text secrets in user data
-  ami           = "${var.ami}"
+  ami           = var.ami
   instance_type = "t2.nano"
 
   vpc_security_group_ids = [
   "${aws_security_group.web-node.id}"]
-  subnet_id = "${aws_subnet.web_subnet.id}"
+  subnet_id = aws_subnet.web_subnet.id
   user_data = <<EOF
 #! /bin/bash
 sudo apt-get update
@@ -56,7 +56,7 @@ resource "aws_ebs_volume" "web_host_storage" {
 
 resource "aws_ebs_snapshot" "example_snapshot" {
   # ebs snapshot without encryption
-  volume_id   = "${aws_ebs_volume.web_host_storage.id}"
+  volume_id   = aws_ebs_volume.web_host_storage.id
   description = "${local.resource_prefix.value}-ebs-snapshot"
   tags = merge({
     Name = "${local.resource_prefix.value}-ebs-snapshot"
@@ -76,8 +76,8 @@ resource "aws_ebs_snapshot" "example_snapshot" {
 
 resource "aws_volume_attachment" "ebs_att" {
   device_name = "/dev/sdh"
-  volume_id   = "${aws_ebs_volume.web_host_storage.id}"
-  instance_id = "${aws_instance.web_host.id}"
+  volume_id   = aws_ebs_volume.web_host_storage.id
+  instance_id = aws_instance.web_host.id
 }
 
 resource "aws_security_group" "web-node" {
@@ -328,4 +328,64 @@ output "public_subnet" {
 output "public_subnet2" {
   description = "The ID of the Public subnet"
   value       = aws_subnet.web_subnet2.id
+}
+
+resource "aws_s3_bucket" "flowbucket_access_logs" {
+  bucket_prefix = "flowbucket-access-logs-"
+}
+
+resource "aws_s3_bucket_logging" "flowbucket_logging" {
+  bucket        = aws_s3_bucket.flowbucket.id
+  target_bucket = aws_s3_bucket.flowbucket_access_logs.id
+  target_prefix = "logs/"
+}
+
+resource "aws_s3_bucket_public_access_block" "flowbucket_pab" {
+  bucket                  = aws_s3_bucket.flowbucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "flowbucket_sse" {
+  bucket = aws_s3_bucket.flowbucket.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "flowbucket_versioning" {
+  bucket = aws_s3_bucket.flowbucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "flowbucket_access_logs_pab" {
+  bucket                  = aws_s3_bucket.flowbucket_access_logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "flowbucket_access_logs_sse" {
+  bucket = aws_s3_bucket.flowbucket_access_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = "alias/aws/s3"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "flowbucket_access_logs_versioning" {
+  bucket = aws_s3_bucket.flowbucket_access_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
