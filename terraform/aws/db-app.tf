@@ -14,11 +14,11 @@ resource "aws_db_instance" "default" {
   password                = var.password
   apply_immediately       = true
   multi_az                = false
-  backup_retention_period = 0
-  storage_encrypted       = false
+  backup_retention_period = 7
+  storage_encrypted       = true
   skip_final_snapshot     = true
   monitoring_interval     = 0
-  publicly_accessible     = true
+  publicly_accessible     = false
 
   tags = merge({
     Name        = "${local.resource_prefix.value}-rds"
@@ -40,6 +40,7 @@ resource "aws_db_instance" "default" {
   lifecycle {
     ignore_changes = ["password"]
   }
+  deletion_protection = true
 }
 
 resource "aws_db_option_group" "default" {
@@ -157,14 +158,14 @@ resource "aws_security_group_rule" "egress" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.default.id}"
+  security_group_id = aws_security_group.default.id
 }
 
 
 ### EC2 instance 
 resource "aws_iam_instance_profile" "ec2profile" {
   name = "${local.resource_prefix.value}-profile"
-  role = "${aws_iam_role.ec2role.name}"
+  role = aws_iam_role.ec2role.name
   tags = {
     git_commit           = "5c6b5d60a8aa63a5d37e60f15185d13a967f0542"
     git_file             = "terraform/aws/db-app.tf"
@@ -260,7 +261,7 @@ resource "aws_instance" "db_app" {
 
   vpc_security_group_ids = [
   "${aws_security_group.web-node.id}"]
-  subnet_id = "${aws_subnet.web_subnet.id}"
+  subnet_id = aws_subnet.web_subnet.id
   user_data = <<EOF
 #! /bin/bash
 ### Config from https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.CreateWebServer.html
@@ -424,6 +425,10 @@ EOF
     }, {
     yor_name = "db_app"
   })
+  metadata_options {
+    http_tokens   = "required"
+    http_endpoint = "enabled"
+  }
 }
 
 output "db_app_public_dns" {
