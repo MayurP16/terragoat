@@ -34,10 +34,10 @@ resource "aws_lambda_function" "analysis_lambda" {
   # lambda have plain text secrets in environment variables
   filename      = "resources/lambda_function_payload.zip"
   function_name = "${local.resource_prefix.value}-analysis"
-  role          = "${aws_iam_role.iam_for_lambda.arn}"
+  role          = aws_iam_role.iam_for_lambda.arn
   handler       = "exports.test"
 
-  source_code_hash = "${filebase64sha256("resources/lambda_function_payload.zip")}"
+  source_code_hash = filebase64sha256("resources/lambda_function_payload.zip")
 
   runtime = "nodejs12.x"
 
@@ -57,5 +57,8 @@ resource "aws_lambda_function" "analysis_lambda" {
     git_repo             = "terragoat"
     yor_trace            = "f7d8bc47-e5d9-4b09-9d8f-e7b9724d826e"
     yor_name             = "analysis_lambda"
+  }
+  tracing_config {
+    mode = "Active"
   }
 }

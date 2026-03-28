@@ -1,4 +1,4 @@
-resource aws_ecr_repository "repository" {
+resource "aws_ecr_repository" "repository" {
   name                 = "${local.resource_prefix.value}-repository"
   image_tag_mutability = "MUTABLE"
 
@@ -17,6 +17,12 @@ resource aws_ecr_repository "repository" {
     }, {
     yor_name = "repository"
   })
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
+  image_scanning_configuration {
+    scan_on_push = true
+  }
 }
 
 locals {
@@ -24,7 +30,7 @@ locals {
 }
 
 
-resource null_resource "push_image" {
+resource "null_resource" "push_image" {
   provisioner "local-exec" {
     working_dir = "${path.module}/resources"
     command     = <<BASH
