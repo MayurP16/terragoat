@@ -69,7 +69,7 @@ resource "azurerm_network_interface" "ni_win" {
   }
 }
 
-resource azurerm_network_security_group "bad_sg" {
+resource "azurerm_network_security_group" "bad_sg" {
   location            = var.location
   name                = "terragoat-${var.environment}"
   resource_group_name = azurerm_resource_group.example.name
@@ -110,7 +110,7 @@ resource azurerm_network_security_group "bad_sg" {
   }
 }
 
-resource azurerm_network_watcher "network_watcher" {
+resource "azurerm_network_watcher" "network_watcher" {
   location            = var.location
   name                = "terragoat-network-watcher-${var.environment}"
   resource_group_name = azurerm_resource_group.example.name
@@ -127,7 +127,7 @@ resource azurerm_network_watcher "network_watcher" {
   }
 }
 
-resource azurerm_network_watcher_flow_log "flow_log" {
+resource "azurerm_network_watcher_flow_log" "flow_log" {
   enabled                   = false
   network_security_group_id = azurerm_network_security_group.bad_sg.id
   network_watcher_name      = azurerm_network_watcher.network_watcher.name
