@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "app1-rds-cluster" {
   cluster_identifier      = "app1-rds-cluster"
   engine                  = "aurora-mysql"
   allocated_storage       = 10
-  backup_retention_period = 0
+  backup_retention_period = 7
   tags = {
     git_commit           = "c0d910ed1714daf24c4772585935adc0718ef210"
     git_file             = "terraform/aws/rds.tf"
