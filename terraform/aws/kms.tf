@@ -14,9 +14,11 @@ resource "aws_kms_key" "logs_key" {
     yor_trace            = "cd8fa2a7-4868-4cd1-993d-da4644808ce5"
     yor_name             = "logs_key"
   }
+  policy              = jsonencode({ Version = "2012-10-17", Statement = [{ Sid = "EnableRoot", Effect = "Allow", Principal = { AWS = "*" }, Action = "kms:*", Resource = "*" }] })
+  enable_key_rotation = true
 }
 
 resource "aws_kms_alias" "logs_key_alias" {
   name          = "alias/${local.resource_prefix.value}-logs-bucket-key"
-  target_key_id = "${aws_kms_key.logs_key.key_id}"
+  target_key_id = aws_kms_key.logs_key.key_id
 }
